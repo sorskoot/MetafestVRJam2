@@ -57,11 +57,12 @@ export default class Game {
 
             sceneToRender.registerBeforeRender(() => {
                 //time += scene.deltaTime;
-                 if (this.controller.right) {
-                     this.score.text = this.controller.right.position.y;
-                 }
+                if (this.controller.right) {
+                    const c = Vector3.Dot(this.controller.left.position.normalize(), this.controller.right.position.normalize());
+                    this.score.text = `c:${c}`;
+                }
                 //if (this.world) {
-                    this.world.rotate(Vector3.Right(), -sceneToRender.deltaTime / 10000, Space.WORLD);
+                this.world.rotate(Vector3.Right(), -sceneToRender.deltaTime / 10000, Space.WORLD);
                 //}
             });
 
