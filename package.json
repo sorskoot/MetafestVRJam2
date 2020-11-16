@@ -49,6 +49,7 @@
         "sass": "^1.10.2",
         "sass-loader": "^8.0.2",
         "stats.js": "^0.17.0",
+        "three": "0.120.1",
         "style-loader": "^1.2.1",
         "through2": "^4.0.2",
         "transform-loader": "^0.2.4",
