@@ -14,6 +14,14 @@
         <a-assets>
         </a-assets>
         <a-entity position="0 -20 0" id="world">
+            <a-entity  position="-2.5 21 0" geometry="primitive: box; width:.5; height: 5;depth:.5"
+            pixel-material="index:1;repeat:1 10;"></a-entity>
+            <a-entity  position="2.5 21 0" geometry="primitive: box; width:.5; height: 5;depth:.5"
+            pixel-material="index:1;repeat:1 10;"></a-entity>
+            <a-entity  position="0 23.5 0" geometry="primitive: box; width:5; height: .5;depth:.5"
+            pixel-material="index:1;repeat:10 1;"></a-entity>
+            <a-entity position = "-1.5 -22 0" geometry="primitive:  sphere;  radius:  .15;"
+            material="color:white"></a-entity>
             <a-entity  rotation="0 0 90"
                 geometry="primitive:  sphere;  radius:  20;  segmentsHeight:  36;  segmentsWidth:  72"
                 pixel-material="index:0;repeat:256 128;"></a-entity>
