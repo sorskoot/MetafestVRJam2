@@ -1,14 +1,17 @@
+const { RedIntegerFormat } = require("three");
+
 AFRAME.registerComponent('game', {
    schema: {},
    init: function () {
       this.world = document.getElementById('world');
       this.rotation = 0;
-   
+      this.timer = 25000;
       this.orbs = [];
       this.lefthand = document.getElementById('left-hand');
       this.righthand = document.getElementById('right-hand');
       this.scoreOrb = document.getElementById('orb-score')
       this.scoreLoop = document.getElementById('loop-score')
+      this.scoreTimer = document.getElementById('timer')
       this.score = {
          loops: 0,
          orbs: 0
@@ -36,6 +39,7 @@ AFRAME.registerComponent('game', {
       this.jumpHeight = 0;
       this.deltaJump = 0;
       this.isReadyToJump = true;
+      this.isRunning = false;
       this.createOrbs();
    },
    update: function (oldData) { },
@@ -52,7 +56,14 @@ AFRAME.registerComponent('game', {
          }
       }
       this.updateSpeed(timeDelta);
-
+      if (this.isRunning) {
+         this.timer -= timeDelta;
+         if (this.timer <= 0) {
+            this.timer = 0;
+            // GAME OVER!
+         }
+      }
+      this.scoreTimer.setAttribute('text', { value: (~~this.timer) / 1000 });
    },
    tock: function (time, timeDelta, camera) { },
    remove: function () { },
@@ -65,6 +76,7 @@ AFRAME.registerComponent('game', {
       const ry = this.righthand.object3D.position.y;
       const dif = (ly - ry);
       const newSpeed = Math.abs(this.prevDif - dif) / timeDelta * 100;
+      if(newSpeed>0) this.isRunning = true;
       let slowdownSpeed = 0.002;
       const speedupspeed = 0.05;
       const maxspeed = 1;
@@ -107,13 +119,13 @@ AFRAME.registerComponent('game', {
       this.orbs = []
       for (let i = 1; i < 16; i++) {
          const orb = document.createElement("a-entity");
-         
+
          orb.setAttribute('mixin', 'orb');
          const orbRot = (2 * Math.PI) / 16 * i;
          const y = Math.cos(orbRot) * 22;
          const z = -Math.sin(orbRot) * 22;
          orb.setAttribute('position', { x: 0, y, z })
-         this.world.appendChild(orb);         
+         this.world.appendChild(orb);
          orb.rotation = orbRot;
          this.orbs.push(orb);
       }
@@ -123,8 +135,8 @@ AFRAME.registerComponent('game', {
       return this.orbs;
    },
 
-   addOrbScore:function(){
-      this.score.orbs ++;
+   addOrbScore: function () {
+      this.score.orbs++;
       this.updateScore();
    }
 

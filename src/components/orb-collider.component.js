@@ -1,3 +1,5 @@
+const ZeroVector = new THREE.Vector3();
+
 AFRAME.registerComponent('orb-collider', {
     tick: function (time, timeDelta) {
         const orbs = this.el.sceneEl.components.game.getOrbs();
@@ -5,7 +7,7 @@ AFRAME.registerComponent('orb-collider', {
 
         for (let i = 0; i < orbs.length; i++) {
             const element = orbs[i];            
-            const dist = this.el.object3D.position.distanceTo(orbs[i].object3D.getWorldPosition());
+            const dist = this.el.object3D.position.distanceTo(orbs[i].object3D.getWorldPosition(ZeroVector));
             if(dist <= .3){
                 orbs[i].setAttribute('explode','');
                 this.el.sceneEl.components.game.addOrbScore();

@@ -5,3 +5,4 @@ This game is made possible by the generous support of our [Twitch](https://twitc
 - thetnerdyhamster
 - thetnerdyhamster gift to azdalen
 - wbw72
+- davidwesst

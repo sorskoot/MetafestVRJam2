@@ -1,15 +1,26 @@
 Must have:
     Pass portal in set amount of time:
         ✔ Detect that pass the portal @done(20-11-19 22:33)
-        ☐ Chang time every loop
-    ☐ Something to jump over
+        ☐ Change time every loop
     Something to grab:
         ✔ Place orbs @done(20-11-19 22:34)
         ✔ Grab Orbs @done(20-11-19 23:12)
+        ☐ Orb variations - Maybe change them every level
+
     ☐ Title screen
+        ~ need to have a name for the game
+
     ☐ Game over screen
+        ~ do not pass the checkpoint/portal in time
+        ~ hit an object
+
+    ☐ Credits screen
+    ☐ Create 5 levels
+        ~ Orbs placed
+        ~ Time limit        
 
 Should have:
+    ☐ Something to jump over
     ☐ Something to dodge
     ☐ Music (maybe http://darkfantasystudio.com/music/pixel/)
     ☐ SFX
