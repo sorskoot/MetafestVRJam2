@@ -35,6 +35,7 @@ AFRAME.registerComponent('game', {
       this.jumpHeight = 0;
       this.deltaJump = 0;
       this.isReadyToJump = true;
+      this.createOrbs();
    },
    update: function (oldData) { },
    tick: function (time, timeDelta) {
@@ -45,7 +46,7 @@ AFRAME.registerComponent('game', {
       if (this.rotation > 360) {
          this.rotation -= 360;
          if (this.jumpHeight < 5) {
-            this.score.loops ++;
+            this.score.loops++;
             this.updateScore();
          }
       }
@@ -98,6 +99,27 @@ AFRAME.registerComponent('game', {
    updateScore: function () {
       this.scoreOrb.setAttribute('text', { value: this.score.orbs });
       this.scoreLoop.setAttribute('text', { value: this.score.loops });
+   },
+
+   createOrbs: function () {
+      //<a-entity position="-1.5 -22 0" ></a-entity>
+      for (let i = 0; i < 16; i++) {
+         const orb = document.createElement("a-entity");
+         orb.setAttribute('mixin', 'orb');
+         const orbRot = (2 * Math.PI) / 16 * i;
+         const y = Math.sin(orbRot) * 22;
+         const z = Math.cos(orbRot) * 22;
+         orb.setAttribute('position', { x: 0, y, z })
+         this.world.appendChild(orb);
+      }
+   },
+
+   /**
+    * return an array of orbs
+    * @returns {HTMLElement[]} orbs
+    */
+   getOrbs: function () {
+
    }
 });
 
