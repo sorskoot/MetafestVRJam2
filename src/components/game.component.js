@@ -1,4 +1,3 @@
-
 AFRAME.registerComponent('game', {
    schema: {},
    init: function () {
@@ -7,13 +6,18 @@ AFRAME.registerComponent('game', {
 
       this.lefthand = document.getElementById('left-hand');
       this.righthand = document.getElementById('right-hand');
-
+      this.scoreOrb = document.getElementById('orb-score')
+      this.scoreLoop = document.getElementById('loop-score')
+      this.score = {
+         loops: 0,
+         orbs: 0
+      }
       for (let i = 0; i < 500; i++) {
          const z = Math.random() * 360;
-         if ((z > 5 && z < 175)|| (z > 185 && z < 355)) {
+         if ((z > 5 && z < 175) || (z > 185 && z < 355)) {
             const coneRoot = document.createElement('a-entity')
             const cone = document.createElement('a-entity');
-            cone.setAttribute('geometry', `primitive: cone; radiusBottom: 1; radiusTop: 0; height:${Math.random()*4+3}`);
+            cone.setAttribute('geometry', `primitive: cone; radiusBottom: 1; radiusTop: 0; height:${Math.random() * 4 + 3}`);
             cone.setAttribute('position', '0 20 0');
             cone.setAttribute('pixel-material', 'index:0;repeat:5 10;')
             coneRoot.appendChild(cone);
@@ -37,7 +41,14 @@ AFRAME.registerComponent('game', {
       if (timeDelta === 0) return;
       this.world.setAttribute('rotation', { x: this.rotation });
       this.world.setAttribute('position', { y: -20 - this.jumpHeight });
-      this.rotation = (this.rotation + this.speed) % 360;
+      this.rotation = this.rotation + this.speed;
+      if (this.rotation > 360) {
+         this.rotation -= 360;
+         if (this.jumpHeight < 5) {
+            this.score.loops ++;
+            this.updateScore();
+         }
+      }
       this.updateSpeed(timeDelta);
 
    },
@@ -74,7 +85,7 @@ AFRAME.registerComponent('game', {
             this.isReadyToJump = false;
          }
       } else {
-         this.deltaJump = Math.max(0, this.deltaJump - jumpspeed*2);
+         this.deltaJump = Math.max(0, this.deltaJump - jumpspeed * 2);
       }
       this.jumpHeight += this.deltaJump;
       this.jumpHeight = Math.max(0, this.jumpHeight - fallspeed);
@@ -82,6 +93,11 @@ AFRAME.registerComponent('game', {
          this.isReadyToJump = true;
       }
       this.prefAvg = avg;
+   },
+
+   updateScore: function () {
+      this.scoreOrb.setAttribute('text', { value: this.score.orbs });
+      this.scoreLoop.setAttribute('text', { value: this.score.loops });
    }
 });
 

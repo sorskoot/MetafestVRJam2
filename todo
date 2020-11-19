@@ -1,6 +1,10 @@
 Must have:
+    Pass portal in set amount of time:
+        ☐ Detect that pass the portal
+        ☐ Chang time every loop
+        
     ☐ Something to jump over
-    ☐ something to grab
+    ☐ Something to grab
     ☐ Title screen
     ☐ Game over screen
 
