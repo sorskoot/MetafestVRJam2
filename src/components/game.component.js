@@ -3,7 +3,8 @@ AFRAME.registerComponent('game', {
    init: function () {
       this.world = document.getElementById('world');
       this.rotation = 0;
-
+   
+      this.orbs = [];
       this.lefthand = document.getElementById('left-hand');
       this.righthand = document.getElementById('right-hand');
       this.scoreOrb = document.getElementById('orb-score')
@@ -103,24 +104,30 @@ AFRAME.registerComponent('game', {
 
    createOrbs: function () {
       //<a-entity position="-1.5 -22 0" ></a-entity>
-      for (let i = 0; i < 16; i++) {
+      this.orbs = []
+      for (let i = 1; i < 16; i++) {
          const orb = document.createElement("a-entity");
+         
          orb.setAttribute('mixin', 'orb');
          const orbRot = (2 * Math.PI) / 16 * i;
-         const y = Math.sin(orbRot) * 22;
-         const z = Math.cos(orbRot) * 22;
+         const y = Math.cos(orbRot) * 22;
+         const z = -Math.sin(orbRot) * 22;
          orb.setAttribute('position', { x: 0, y, z })
-         this.world.appendChild(orb);
+         this.world.appendChild(orb);         
+         orb.rotation = orbRot;
+         this.orbs.push(orb);
       }
    },
 
-   /**
-    * return an array of orbs
-    * @returns {HTMLElement[]} orbs
-    */
    getOrbs: function () {
+      return this.orbs;
+   },
 
+   addOrbScore:function(){
+      this.score.orbs ++;
+      this.updateScore();
    }
+
 });
 
 

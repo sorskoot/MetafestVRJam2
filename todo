@@ -1,10 +1,11 @@
 Must have:
     Pass portal in set amount of time:
-        ☐ Detect that pass the portal
+        ✔ Detect that pass the portal @done(20-11-19 22:33)
         ☐ Chang time every loop
-        
     ☐ Something to jump over
-    ☐ Something to grab
+    Something to grab:
+        ✔ Place orbs @done(20-11-19 22:34)
+        ✔ Grab Orbs @done(20-11-19 23:12)
     ☐ Title screen
     ☐ Game over screen
 
