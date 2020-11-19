@@ -4,10 +4,9 @@ AFRAME.registerComponent('shoot-controls', {
         hand: { default: 'left' }
     },
     init: function () {
-        this.game=document.querySelector('[game]')
-        // this.el.addEventListener('buttondown', ()=>{
-        //     this.game.emit('fire');
-        // });
+        this.el.addEventListener('buttondown', ()=>{
+             this.el.sceneEl.components.game.buttondown();
+        });
     },
     update: function () {
         var el = this.el;

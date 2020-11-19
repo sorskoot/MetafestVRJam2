@@ -1,21 +1,22 @@
-const { RedIntegerFormat } = require("three");
+const GAMESTATE_TITLE = 0;
+const GAMESTATE_PLAY = 1;
+const GAMESTATE_GAMEOVER = 2;
 
 AFRAME.registerComponent('game', {
    schema: {},
    init: function () {
+      
       this.world = document.getElementById('world');
-      this.rotation = 0;
-      this.timer = 25000;
-      this.orbs = [];
+
       this.lefthand = document.getElementById('left-hand');
       this.righthand = document.getElementById('right-hand');
-      this.scoreOrb = document.getElementById('orb-score')
-      this.scoreLoop = document.getElementById('loop-score')
-      this.scoreTimer = document.getElementById('timer')
-      this.score = {
-         loops: 0,
-         orbs: 0
-      }
+      this.titlescreen = document.getElementById('title-screen');
+      this.gameoverscreen = document.getElementById('gameover-screen');
+      this.scorescreen = document.getElementById('score-screen');
+      this.scoreOrb = document.getElementById('orb-score');
+      this.scoreLoop = document.getElementById('loop-score');
+      this.scoreTimer = document.getElementById('timer');
+      this.orbscontainer = document.getElementById('orbs-container');
       for (let i = 0; i < 500; i++) {
          const z = Math.random() * 360;
          if ((z > 5 && z < 175) || (z > 185 && z < 355)) {
@@ -34,17 +35,16 @@ AFRAME.registerComponent('game', {
             this.world.appendChild(coneRoot);
          }
       }
-      this.speed = 0;
-      this.prevDif = 0;
-      this.jumpHeight = 0;
-      this.deltaJump = 0;
-      this.isReadyToJump = true;
-      this.isRunning = false;
-      this.createOrbs();
+
+      this.reset();
+     
+      this.gamestate = GAMESTATE_TITLE;   
+      this.updateScreens();   
+      
    },
    update: function (oldData) { },
    tick: function (time, timeDelta) {
-      if (timeDelta === 0) return;
+      if (timeDelta === 0 || this.gamestate !== GAMESTATE_PLAY) return;
       this.world.setAttribute('rotation', { x: this.rotation });
       this.world.setAttribute('position', { y: -20 - this.jumpHeight });
       this.rotation = this.rotation + this.speed;
@@ -60,7 +60,9 @@ AFRAME.registerComponent('game', {
          this.timer -= timeDelta;
          if (this.timer <= 0) {
             this.timer = 0;
-            // GAME OVER!
+            this.orbscontainer.innerHTML = ''  
+            this.gamestate = GAMESTATE_GAMEOVER;
+            this.updateScreens();
          }
       }
       this.scoreTimer.setAttribute('text', { value: (~~this.timer) / 1000 });
@@ -114,8 +116,8 @@ AFRAME.registerComponent('game', {
       this.scoreLoop.setAttribute('text', { value: this.score.loops });
    },
 
-   createOrbs: function () {
-      //<a-entity position="-1.5 -22 0" ></a-entity>
+   createOrbs: function () {      
+      this.orbscontainer.innerHTML = ''      
       this.orbs = []
       for (let i = 1; i < 16; i++) {
          const orb = document.createElement("a-entity");
@@ -125,7 +127,7 @@ AFRAME.registerComponent('game', {
          const y = Math.cos(orbRot) * 22;
          const z = -Math.sin(orbRot) * 22;
          orb.setAttribute('position', { x: 0, y, z })
-         this.world.appendChild(orb);
+         this.orbscontainer.appendChild(orb);
          orb.rotation = orbRot;
          this.orbs.push(orb);
       }
@@ -138,154 +140,50 @@ AFRAME.registerComponent('game', {
    addOrbScore: function () {
       this.score.orbs++;
       this.updateScore();
+   },
+
+   buttondown: function(){
+      if(this.gamestate === GAMESTATE_PLAY) return;
+      this.reset();
+      this.gamestate = GAMESTATE_PLAY;
+      this.updateScreens();
+   },
+
+   updateScreens:function(){
+      switch(this.gamestate){
+         case GAMESTATE_GAMEOVER:
+            this.scorescreen.setAttribute('visible','false');
+            this.gameoverscreen.setAttribute('visible','true');
+            this.titlescreen.setAttribute('visible','false');
+            break;
+         case GAMESTATE_PLAY:
+            this.scorescreen.setAttribute('visible','true');
+            this.gameoverscreen.setAttribute('visible','false');
+            this.titlescreen.setAttribute('visible','false');
+            break;
+         case GAMESTATE_TITLE:
+            this.scorescreen.setAttribute('visible','false');
+            this.gameoverscreen.setAttribute('visible','false');
+            this.titlescreen.setAttribute('visible','true');
+            break;
+      }
+   },
+   reset:function(){
+      this.score = {
+         loops: 0,
+         orbs: 0
+      }
+      this.rotation = 0;
+      this.timer = 25000;
+      this.orbs = [];
+      this.speed = 0;
+      this.prevDif = 0;
+      this.jumpHeight = 0;
+      this.deltaJump = 0;
+      this.isReadyToJump = true;
+      this.isRunning = false;
+      
+      this.createOrbs();
    }
 
 });
-
-
-
-
-
-// export default class Game {
-//     constructor() {
-
-//         this.controller = {
-//             /** @type {AbstractMesh} */
-//             left: null,
-//             /** @type {AbstractMesh} */
-//             right: null
-//         };
-//         /** @type {Engine} */
-//         var engine = null;
-//         /** @type {Scene} */
-//         var scene = null;
-//         /** @type {Scene} */
-//         var sceneToRender = null;
-//         /** @type {Mesh} */
-//         this.GUIPlane = null;
-
-//         /** @type {TextBlock} */
-//         this.score = null;
-//         /** @type {Mesh} */
-//         this.world = null;
-
-
-//         try {
-//             engine = this.createDefaultEngine();
-//         } catch (e) {
-//             console.log("the available createEngine function failed. Creating the default engine instead");
-//             engine = createDefaultEngine();
-//         }
-//         if (!engine) throw 'engine should not be null.';
-//         this.createScene(engine).then(returnedScene => {
-//             sceneToRender = returnedScene;
-
-//             sceneToRender.registerBeforeRender(() => {
-//                 //time += scene.deltaTime;
-//                 if (this.controller.right) {
-//                     const c = Vector3.Dot(this.controller.left.position.normalize(), this.controller.right.position.normalize());
-//                     this.score.text = `c:${c}`;
-//                 }
-//                 //if (this.world) {
-//                 this.world.rotate(Vector3.Right(), -sceneToRender.deltaTime / 10000, Space.WORLD);
-//                 //}
-//             });
-
-//             engine.runRenderLoop(() => {
-
-//                 if (sceneToRender && sceneToRender.activeCamera) {
-//                     sceneToRender.render();
-//                 }
-
-//             })
-//         });
-//         // Resize
-//         window.addEventListener("resize", function () {
-//             engine.resize();
-//         });
-//     }
-
-//     async createScene(engine) {
-//         const canvas = document.getElementById('renderCanvas');
-//         // This creates a basic Babylon Scene object (non-mesh)        
-//         var scene = new Scene(engine);
-//         scene.gravity = new Vector3(0, -9.81, 0);
-//         //Inspector.Show(scene);
-//         // This creates and positions a free camera (non-mesh)
-
-//         var camera = new FreeCamera("camera1", new Vector3(0, 1.6, 0), scene);
-
-//         // This targets the camera to scene origin
-//         camera.setTarget(Vector3.Forward());
-
-//         // This attaches the camera to the canvas
-//         camera.attachControl(canvas, true);
-//         camera.applyGravity = true;
-
-//         this.world = new Mesh("world", scene);
-
-//         // GUI
-//         this.GUIPlane = Mesh.CreatePlane("plane", 2, scene);
-//         this.GUIPlane.position.y = .2;
-//         var advancedTexture = AdvancedDynamicTexture.CreateForMesh(this.GUIPlane);
-//         this.score = new TextBlock('text', 'HELLO!')
-//         advancedTexture.addControl(this.score);
-
-//         // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-//         var light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
-//         light.parent = this.world;
-//         // Default intensity is 1. Let's dim the light a small amount
-//         light.intensity = 0.7;
-
-//         var material = new GridMaterial("grid", scene);
-//         // Our built-in 'sphere' shape.
-//         var sphere = MeshBuilder.CreateSphere("sphere", { diameter: 40, segments: 32 }, scene);
-//         sphere.material = material;
-
-//         sphere.setParent(this.world)
-//         // Move the sphere upward 1/2 its height
-//         //sphere.position.y = -20;
-
-//         for (let i = 0; i < 250; i++) {
-//             const o = new RandomEntity(scene, 'randomEntity' + i, new Vector3(0, 0, 0), 20);
-//             o.mesh.parent = this.world;
-//             o.mesh.material = material;
-//         }
-
-//         scene.createDefaultEnvironment();
-//         // XR
-//         const xrHelper = await scene.createDefaultXRExperienceAsync();
-//         // xrHelper.baseExperience.camera.on
-//         xrHelper.input.onControllerAddedObservable.add((controller, s) => {
-//             this.controller[controller.inputSource.handedness] = controller.grip;
-//             if (controller.inputSource.handedness == 'right') {
-//                 this.GUIPlane.parent = controller.grip;
-//             }
-//             // controller.onMotionControllerInitObservable.add((motionController, s2) => {
-//             //     if (motionController.handness === 'right') {
-//             //         this.controller[motionController.handness] = motionController;
-//             //     }
-//             //     // e2.components['xr-standard-thumbstick'].onAxisValueChangedObservable.add((stickE,stickS)=>{
-//             //     //     //     console.dir(stickE.x+'--'+stickE.y);
-//             //     //     // });                
-//             // });
-//             // e.onMeshLoadedObservable.add((e3,s3)=>{
-//             //     console.dir(e3);    
-//             // })
-//         });
-
-
-//         this.world.position.set(0, -20, 0);
-
-//         return scene;
-
-//     }
-
-//     createDefaultEngine() {
-//         var canvas = document.getElementById("renderCanvas");
-//         return new Engine(canvas, true, {
-//             preserveDrawingBuffer: true, stencil: true
-//         });
-//     }
-// }
-

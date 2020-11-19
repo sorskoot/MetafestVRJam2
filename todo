@@ -9,7 +9,11 @@ Must have:
 
     ☐ Title screen
         ~ need to have a name for the game
-
+            ~ Orbit - Looper - loop - planet - Orbs - Run - Jump 
+            ~ OrbitLooper
+            ~ PlanetRunner
+            ~ OrbitRunner
+            ~ 
     ☐ Game over screen
         ~ do not pass the checkpoint/portal in time
         ~ hit an object

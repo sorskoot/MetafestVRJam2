@@ -13,6 +13,8 @@
     <a-scene background="color:black" game>
         <a-assets>
             <a-mixin id="orb" geometry="primitive:  sphere;  radius:  .15;" material="color:white"></a-mixin>
+            <img id="titlescreen" src="titlescreen.png">
+            <img id="gameoverscreen" src="gameoverscreen.png">
         </a-assets>
 
         <a-entity position="0 -20 0" id="world">
@@ -24,7 +26,10 @@
                 pixel-material="index:1;repeat:10 1;"></a-entity>
             <a-entity rotation="0 0 90" geometry="primitive:sphere;radius:20;segmentsHeight:36;  segmentsWidth:  72"
                 pixel-material="index:0;repeat:256 128;"></a-entity>
+            <a-entity id="orbs-container"></a-entity>
         </a-entity>
+        <a-plane id="title-screen" material="transparent: true; src: #titlescreen; depthTest: false; depthWrite: false" geometry="height: 3; width: 3" position="0 1.6 -2"></a-plane>
+        <a-plane id="gameover-screen" material="transparent:true;src:#gameoverscreen; depthTest: false; depthWrite: false" geometry="height: 3; width: 3" position="0 1.6 -2" ></a-plane>
 
         <a-entity id="left-hand" orb-collider shoot-controls="hand:left">
         </a-entity>
@@ -32,7 +37,7 @@
         </a-entity>
         <a-entity camera look-controls wasd-controls position="0 1.6 0">
 
-            <a-entity position="0.2 0.3 -1">
+            <a-entity id="score-screen" position="0.2 0.3 -1">
                 <a-entity position="-0.5 0 0">
                     <a-text id="loop-score-label" text="width: 2; value: Loops:" position="-0.25949 0 0"></a-text>
                     <a-text id="loop-score" text="width: 2; value: 0"></a-text>
