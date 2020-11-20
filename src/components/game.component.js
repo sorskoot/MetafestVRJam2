@@ -1,15 +1,16 @@
+import {levels} from '../classes/levels'
 const GAMESTATE_TITLE = 0;
 const GAMESTATE_PLAY = 1;
 const GAMESTATE_GAMEOVER = 2;
 
 AFRAME.registerComponent('game', {
    schema: {},
-   init: function () {
+   init: function () {      
       this.musicIntro = document.getElementById('music-intro');
+      this.musicIntro.loop = true;
       this.musicGame = document.getElementById('music-game');
-
+      this.musicGame.loop = true; 
       this.world = document.getElementById('world');
-
       this.lefthand = document.getElementById('left-hand');
       this.righthand = document.getElementById('right-hand');
       this.titlescreen = document.getElementById('title-screen');
@@ -19,6 +20,7 @@ AFRAME.registerComponent('game', {
       this.scoreLoop = document.getElementById('loop-score');
       this.scoreTimer = document.getElementById('timer');
       this.orbscontainer = document.getElementById('orbs-container');
+
       for (let i = 0; i < 500; i++) {
          const z = Math.random() * 360;
          if ((z > 5 && z < 175) || (z > 185 && z < 355)) {
@@ -37,18 +39,12 @@ AFRAME.registerComponent('game', {
             this.world.appendChild(coneRoot);
          }
       }
-      this.isMusicPlaying = false;
-      
-      
+      this.isMusicPlaying = false;            
       this.el.addEventListener('enter-vr',()=>{
          this.musicGame.pause();
          this.musicIntro.play();
       });
-
-      
-
-      this.reset();
-     
+      this.reset();     
       this.gamestate = GAMESTATE_TITLE;   
       this.updateScreens();   
       
@@ -63,7 +59,8 @@ AFRAME.registerComponent('game', {
          this.rotation -= 360;
          if (this.jumpHeight < 5) {
             this.score.loops++;
-            this.updateScore();
+            this.updateScore();            
+            this.createOrbs(this.score.loops);
          }
       }
       this.updateSpeed(timeDelta);
@@ -93,8 +90,8 @@ AFRAME.registerComponent('game', {
       let slowdownSpeed = 0.002;
       const speedupspeed = 0.05;
       const maxspeed = 1;
-      const jumpspeed = .1;
-      const fallspeed = .35;
+      const jumpspeed = .04;
+      const fallspeed = .1;
       if (!this.isReadyToJump) {
          slowdownSpeed = 0;
       }
@@ -104,7 +101,6 @@ AFRAME.registerComponent('game', {
       const avg = (ly + ry) / 2;
       const deltaAvg = avg - this.prefAvg
 
-      // todo: prevent double/tripple/etc jump
       if (this.isReadyToJump) {
          if (deltaAvg > .02) { // moving Up;         
             this.deltaJump += jumpspeed//jump
@@ -127,20 +123,23 @@ AFRAME.registerComponent('game', {
       this.scoreLoop.setAttribute('text', { value: this.score.loops });
    },
 
-   createOrbs: function () {      
+   createOrbs: function (index = 0) {      
       this.orbscontainer.innerHTML = ''      
       this.orbs = []
-      for (let i = 1; i < 16; i++) {
-         const orb = document.createElement("a-entity");
+      if(index >= levels.length-1) index = levels.length-1;
+      this.timer = levels[index].levelTime;
 
-         orb.setAttribute('mixin', 'orb');
-         const orbRot = (2 * Math.PI) / 16 * i;
-         const y = Math.cos(orbRot) * 22;
-         const z = -Math.sin(orbRot) * 22;
-         orb.setAttribute('position', { x: 0, y, z })
-         this.orbscontainer.appendChild(orb);
-         orb.rotation = orbRot;
-         this.orbs.push(orb);
+      for (let i = 0; i < levels[index].orbs.length; i++) {
+         const orb = levels[index].orbs[i];
+         const orbElement = document.createElement("a-entity");
+         orbElement.setAttribute('mixin', 'orb');
+         const orbRot = (Math.PI / 180) * orb.rot;
+         const y = Math.cos(orbRot) * (22 + orb.height);
+         const z = -Math.sin(orbRot) * (22 + orb.height);
+         orbElement.setAttribute('position', { x: orb.offset, y, z })
+         this.orbscontainer.appendChild(orbElement);
+         orbElement.rotation = orbRot;
+         this.orbs.push(orbElement);
       }
    },
 
@@ -201,7 +200,8 @@ AFRAME.registerComponent('game', {
       this.deltaJump = 0;
       this.isReadyToJump = true;
       this.isRunning = false;
-      
+
+      this.updateScore();
       this.createOrbs();
    }
 

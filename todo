@@ -5,7 +5,7 @@ Must have:
     Something to grab:
         ✔ Place orbs @done(20-11-19 22:34)
         ✔ Grab Orbs @done(20-11-19 23:12)
-        ☐ Orb variations - Maybe change them every level
+        ✔ Orb variations - Maybe change them every level @done(20-11-20 22:56)
 
     ✔ Title screen @done(20-11-20 16:03)
         ~ need to have a name for the game
@@ -17,20 +17,21 @@ Must have:
     ✔ Game over screen @done(20-11-20 16:03)
         ~ do not pass the checkpoint/portal in time
         ~ hit an object
-
-    ☐ Credits screen
-    ☐ Create 5 levels
+    ☐ @today Create 5 levels
         ~ Orbs placed
         ~ Time limit        
 
-Should have:
+    ☐ @today SFX
+    ☐ @today Particle Effects  
+
+Should have:    
+    ☐ Credits screen
     ☐ Something to jump over
     ☐ Something to dodge
-    ☐ Music (maybe http://darkfantasystudio.com/music/pixel/)
+    ✔ Music (maybe http://darkfantasystudio.com/music/pixel/) @done(20-11-20 21:19)
         ~ add mention to DARK FANTASY STUDIO and Nicolas Jeudy
         ~ make sure music is not in GitHub, but link to the music
-    ☐ SFX
-    ☐ Particle Effects
+    
 
 Could have:
     ☐ When time runs out, make text bigger and red for the last 5 seconds
