@@ -5,7 +5,9 @@ const GAMESTATE_GAMEOVER = 2;
 AFRAME.registerComponent('game', {
    schema: {},
    init: function () {
-      
+      this.musicIntro = document.getElementById('music-intro');
+      this.musicGame = document.getElementById('music-game');
+
       this.world = document.getElementById('world');
 
       this.lefthand = document.getElementById('left-hand');
@@ -35,6 +37,15 @@ AFRAME.registerComponent('game', {
             this.world.appendChild(coneRoot);
          }
       }
+      this.isMusicPlaying = false;
+      
+      
+      this.el.addEventListener('enter-vr',()=>{
+         this.musicGame.pause();
+         this.musicIntro.play();
+      });
+
+      
 
       this.reset();
      
@@ -152,16 +163,24 @@ AFRAME.registerComponent('game', {
    updateScreens:function(){
       switch(this.gamestate){
          case GAMESTATE_GAMEOVER:
+            this.musicGame.pause();
+            this.musicIntro.play();
+            this.musicIntro.currentTime = 0;
             this.scorescreen.setAttribute('visible','false');
             this.gameoverscreen.setAttribute('visible','true');
             this.titlescreen.setAttribute('visible','false');
             break;
          case GAMESTATE_PLAY:
+            this.musicGame.currentTime = 0;
+            this.musicGame.play();
+            this.musicIntro.pause();
             this.scorescreen.setAttribute('visible','true');
             this.gameoverscreen.setAttribute('visible','false');
             this.titlescreen.setAttribute('visible','false');
             break;
          case GAMESTATE_TITLE:
+            this.musicGame.pause();
+            this.musicIntro.play();
             this.scorescreen.setAttribute('visible','false');
             this.gameoverscreen.setAttribute('visible','false');
             this.titlescreen.setAttribute('visible','true');

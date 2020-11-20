@@ -7,14 +7,14 @@ Must have:
         ✔ Grab Orbs @done(20-11-19 23:12)
         ☐ Orb variations - Maybe change them every level
 
-    ☐ Title screen
+    ✔ Title screen @done(20-11-20 16:03)
         ~ need to have a name for the game
             ~ Orbit - Looper - loop - planet - Orbs - Run - Jump 
             ~ OrbitLooper
             ~ PlanetRunner
             ~ OrbitRunner
             ~ 
-    ☐ Game over screen
+    ✔ Game over screen @done(20-11-20 16:03)
         ~ do not pass the checkpoint/portal in time
         ~ hit an object
 
@@ -27,12 +27,17 @@ Should have:
     ☐ Something to jump over
     ☐ Something to dodge
     ☐ Music (maybe http://darkfantasystudio.com/music/pixel/)
+        ~ add mention to DARK FANTASY STUDIO and Nicolas Jeudy
+        ~ make sure music is not in GitHub, but link to the music
     ☐ SFX
     ☐ Particle Effects
 
 Could have:
+    ☐ When time runs out, make text bigger and red for the last 5 seconds
 
 Would like:
+    Different 'worlds'
+
 
 Bugs:
 
