@@ -8,14 +8,17 @@ AFRAME.registerComponent('explosion', {
         color: {
             type: 'color'
         },
+        rotation: {
+            default: 0
+        },
         size: {
-            default: .1
+            default: .2
         },
         velocityStart: {
             default: 8
         },
         outward: {
-            default: 2000,
+            default: 1000,
         },
         burst: {
             default: .1
@@ -23,8 +26,8 @@ AFRAME.registerComponent('explosion', {
         lifetime: { default: 500 }
     },
     init: function () {
-        this.el.removeAttribute('geometry');
-        this.particleCount = 75;
+
+        this.particleCount = 250;
         this.particles = new THREE.BufferGeometry();
         this.velocities = [];
         let vertices = [];
@@ -39,7 +42,7 @@ AFRAME.registerComponent('explosion', {
             let velocity = new THREE.Vector3(
                 (Math.random() - 0.5) * this.data.velocityStart,
                 (Math.random() - 0.5) * this.data.velocityStart,
-                (Math.random() * -64));//-this.data.velocityStart);
+                (Math.random() - 0.5) * this.data.velocityStart);
             // add it to the geometry
 
             vertices.push(
@@ -58,9 +61,10 @@ AFRAME.registerComponent('explosion', {
         // add it to the scene
         this.el.setObject3D('particle-system', this.particleSystem);
         this.el.setAttribute('selfdestruct', { timer: this.data.lifetime });
+
     },
     tick: function (time, timeDelta) {
-    //    this.material.size = Math.max(this.material.size - (timeDelta / 1000), 0);
+        this.material.size = Math.max(this.material.size - (timeDelta / 2000), 0);
         var positions = this.particleSystem.geometry.attributes.position;
         for (let i = 0; i < positions.count; i++) {
             var px = positions.getX(i);
@@ -73,8 +77,9 @@ AFRAME.registerComponent('explosion', {
                 py + (this.velocities[i].y * timeDeltaOutward),
                 pz + (this.velocities[i].z * timeDeltaOutward)
             );
-            this.velocities[i].y -= (64 * timeDelta / 1500);
-           // this.velocities[i].x -= (64 * timeDelta / 1500);
+
+            this.velocities[i].y -= 1 / 50 * timeDelta;
+            this.velocities[i].z += 1 / 500 * timeDelta;
         }
         positions.needsUpdate = true;
 

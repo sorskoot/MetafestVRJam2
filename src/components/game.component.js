@@ -48,11 +48,7 @@ AFRAME.registerComponent('game', {
       this.el.addEventListener('enter-vr', () => {
          InitAudio();
          this.musicGame.pause();
-         this.musicIntro.play();
-         setTimeout(()=>{
-            this.titlescreen.setAttribute('explosion','');
-   
-         },5000)   
+         this.musicIntro.play(); 
       });
       this.reset();
       this.gamestate = GAMESTATE_TITLE;

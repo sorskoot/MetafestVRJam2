@@ -1,7 +1,7 @@
 Must have:
     Pass portal in set amount of time:
         ✔ Detect that pass the portal @done(20-11-19 22:33)
-        ☐ Change time every loop
+        ✔ Change time every loop @done(20-11-21 12:31)
     Something to grab:
         ✔ Place orbs @done(20-11-19 22:34)
         ✔ Grab Orbs @done(20-11-19 23:12)
@@ -17,21 +17,22 @@ Must have:
     ✔ Game over screen @done(20-11-20 16:03)
         ~ do not pass the checkpoint/portal in time
         ~ hit an object
-    ✔ @today Create 5 levels @done(20-11-20 23:07)
+    ✔  Create 5 levels @done(20-11-20 23:07)
         ~ Orbs placed
         ~ Time limit        
 
-    ✔ @today SFX @done(20-11-21 00:14)
+    ✔  SFX @done(20-11-21 00:14)
         ✔ Hitting an orb @done(20-11-21 00:14)
         ✔ passing a checkpoint @done(20-11-21 00:14)
         ✔ jumping @done(20-11-21 00:14)
         ✔ landing @done(20-11-21 00:16)
-    ☐ @today Particle Effects  
+    ✔  Particle Effects @done(20-11-21 20:11)
 
 Should have:        
     ☐ Something to jump over
     ☐ Credits screen
     ☐ Something to dodge
+    ☐ better SFX
     ✔ Music (maybe http://darkfantasystudio.com/music/pixel/) @done(20-11-20 21:19)
         ~ add mention to DARK FANTASY STUDIO and Nicolas Jeudy
         ~ make sure music is not in GitHub, but link to the music
@@ -47,6 +48,8 @@ Would like:
 
 
 Bugs:
+    ✔ @critical Orbs count multiple times @done(20-11-21 20:11)
+    ✔ Add more particles per explosion and make them more visible @done(20-11-21 21:12)
 
 
 
