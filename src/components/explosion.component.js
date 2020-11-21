@@ -8,23 +8,22 @@ AFRAME.registerComponent('explosion', {
         color: {
             type: 'color'
         },
-        size:{
-            default:.25
+        size: {
+            default: .1
         },
-        velocityStart:{
-            default: 32
+        velocityStart: {
+            default: 8
         },
-        outward:{
-            default:2000,
+        outward: {
+            default: 2000,
         },
-        burst:{
-            default:5
+        burst: {
+            default: .1
         },
-        lifetime:{default:500}
+        lifetime: { default: 500 }
     },
     init: function () {
         this.el.removeAttribute('geometry');
-        this.tick = AFRAME.utils.throttleTick(this.tick, 1/30, this)
         this.particleCount = 75;
         this.particles = new THREE.BufferGeometry();
         this.velocities = [];
@@ -40,10 +39,13 @@ AFRAME.registerComponent('explosion', {
             let velocity = new THREE.Vector3(
                 (Math.random() - 0.5) * this.data.velocityStart,
                 (Math.random() - 0.5) * this.data.velocityStart,
-                (Math.random() - 0.5) * this.data.velocityStart);
+                (Math.random() * -64));//-this.data.velocityStart);
             // add it to the geometry
-           
-            vertices.push(Math.random() * this.data.burst - this.data.burst/2, Math.random() * this.data.burst - this.data.burst/2, Math.random() * this.data.burst- this.data.burst/2);
+
+            vertices.push(
+                Math.random() * this.data.burst - this.data.burst / 2,
+                Math.random() * this.data.burst - this.data.burst / 2,
+                Math.random() * this.data.burst - this.data.burst / 2);
             this.velocities.push(velocity);
         }
         this.particles.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
@@ -58,7 +60,7 @@ AFRAME.registerComponent('explosion', {
         this.el.setAttribute('selfdestruct', { timer: this.data.lifetime });
     },
     tick: function (time, timeDelta) {
-        this.material.size = Math.max(this.material.size - (timeDelta / 4000), 0);
+    //    this.material.size = Math.max(this.material.size - (timeDelta / 1000), 0);
         var positions = this.particleSystem.geometry.attributes.position;
         for (let i = 0; i < positions.count; i++) {
             var px = positions.getX(i);
@@ -72,6 +74,7 @@ AFRAME.registerComponent('explosion', {
                 pz + (this.velocities[i].z * timeDeltaOutward)
             );
             this.velocities[i].y -= (64 * timeDelta / 1500);
+           // this.velocities[i].x -= (64 * timeDelta / 1500);
         }
         positions.needsUpdate = true;
 

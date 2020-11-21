@@ -43,11 +43,16 @@ AFRAME.registerComponent('game', {
             this.world.appendChild(coneRoot);
          }
       }
+      
       this.isMusicPlaying = false;
       this.el.addEventListener('enter-vr', () => {
          InitAudio();
          this.musicGame.pause();
          this.musicIntro.play();
+         setTimeout(()=>{
+            this.titlescreen.setAttribute('explosion','');
+   
+         },5000)   
       });
       this.reset();
       this.gamestate = GAMESTATE_TITLE;
