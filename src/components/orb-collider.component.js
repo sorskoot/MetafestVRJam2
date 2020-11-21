@@ -12,7 +12,7 @@ AFRAME.registerComponent('orb-collider', {
             if (dist <= .3) {
                 this.createExplosion(orbs[i], orbs[i].object3D.getWorldPosition(), '#ffffff', orbs[i].rotation)
                 orbs[i].remove();
-                this.el.sceneEl.components.game.addOrbScore();
+                this.el.sceneEl.components.game.addOrbScore(i);
                 return;
             }
         }

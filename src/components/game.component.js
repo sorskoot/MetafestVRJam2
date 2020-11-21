@@ -1,19 +1,22 @@
 import { levels } from '../classes/levels'
 import { InitAudio, sound, soundfx } from '../classes/sound'
+
 const GAMESTATE_TITLE = 0;
 const GAMESTATE_PLAY = 1;
 const GAMESTATE_GAMEOVER = 2;
+const ZeroVector = new THREE.Vector3();
 
 AFRAME.registerComponent('game', {
    schema: {},
    init: function () {
+      this.camera = document.querySelector('[camera]');
       this.musicIntro = document.getElementById('music-intro');
       this.musicIntro.loop = true;
       this.musicIntro.volume = .5;
       this.musicGame = document.getElementById('music-game');
       this.musicGame.loop = true;
       this.musicGame.volume = .5;
-      
+
       this.world = document.getElementById('world');
       this.lefthand = document.getElementById('left-hand');
       this.righthand = document.getElementById('right-hand');
@@ -43,12 +46,13 @@ AFRAME.registerComponent('game', {
             this.world.appendChild(coneRoot);
          }
       }
-      
+
       this.isMusicPlaying = false;
       this.el.addEventListener('enter-vr', () => {
          InitAudio();
          this.musicGame.pause();
-         this.musicIntro.play(); 
+         this.musicIntro.play();
+         this.camera.object3D.position.y=2;
       });
       this.reset();
       this.gamestate = GAMESTATE_TITLE;
@@ -61,16 +65,27 @@ AFRAME.registerComponent('game', {
       this.world.setAttribute('rotation', { x: this.rotation });
       this.world.setAttribute('position', { y: -20 - this.jumpHeight });
       this.rotation = this.rotation + this.speed;
+
+      if (this.checkWallCollision()){
+         this.timer = 0;
+         this.orbscontainer.innerHTML = ''
+         sound.play(soundfx.gameover);
+         this.gamestate = GAMESTATE_GAMEOVER;
+         this.updateScreens();
+         return;
+      } 
+
       if (this.rotation > 360) {
          this.rotation -= 360;
          if (this.jumpHeight < 5) {
             this.score.loops++;
             sound.play(soundfx.checkpoint);
             this.updateScore();
-            this.createOrbs(this.score.loops);
+            this.createLevel(this.score.loops);
          }
       }
       this.updateSpeed(timeDelta);
+
       if (this.isRunning) {
          this.timer -= timeDelta;
          if (this.timer <= 0) {
@@ -122,11 +137,11 @@ AFRAME.registerComponent('game', {
       } else {
          this.deltaJump = Math.max(0, this.deltaJump - jumpspeed * 2);
       }
-      
+
       this.jumpHeight += this.deltaJump;
       this.jumpHeight = Math.max(0, this.jumpHeight - fallspeed);
       if (this.jumpHeight === 0) {
-         if(this.jumping === true){
+         if (this.jumping === true) {
             sound.play(soundfx.land);
          }
          this.isReadyToJump = true;
@@ -140,9 +155,10 @@ AFRAME.registerComponent('game', {
       this.scoreLoop.setAttribute('text', { value: this.score.loops });
    },
 
-   createOrbs: function (index = 0) {
+   createLevel: function (index = 0) {
       this.orbscontainer.innerHTML = '';
       this.orbs = [];
+      this.platforms = [];
       if (index >= levels.length - 1) index = levels.length - 1;
       this.timer = levels[index].levelTime;
 
@@ -158,13 +174,58 @@ AFRAME.registerComponent('game', {
          orbElement.rotation = orbRot;
          this.orbs.push(orbElement);
       }
+
+      for (let i = 0; i < levels[index].obstacles.length; i++) {
+         const platform = levels[index].obstacles[i];
+         const platformElement = document.createElement("a-entity");
+         const platformElementContainer = document.createElement("a-entity");
+         switch (platform.type) {
+            case 1:
+               platformElement.setAttribute('mixin', 'platform1');
+               platformElement.setAttribute('position', '0 21 0');
+               break;
+            case 2:
+               platformElement.setAttribute('mixin', 'platform2');
+               platformElement.setAttribute('position', '0 21.5 0');
+               break;
+            case 3:
+               platformElement.setAttribute('mixin', 'platform3');
+               platformElement.setAttribute('position', '0 22 0');
+               break;
+            case 4:
+               platformElement.setAttribute('mixin', 'platform4');
+               platformElement.setAttribute('position', '1 24 0');
+               break;
+            case 5:
+               platformElement.setAttribute('mixin', 'platform4');
+               platformElement.setAttribute('position', '-1 24 0');
+               break;
+            case 6:
+               platformElement.setAttribute('mixin', 'platform3');
+               platformElement.setAttribute('position', '0 24 0');
+               break;
+         }
+
+         platformElementContainer.setAttribute('rotation',
+            {
+               x: -platform.rot,
+               y: 0,
+               z: 0
+            });
+         platformElementContainer.appendChild(platformElement)
+         this.orbscontainer.appendChild(platformElementContainer);
+         platformElement.rotation = platform.rot;
+         platformElement.type = platform.type;
+         this.platforms.push(platformElement);
+      }
    },
 
    getOrbs: function () {
       return this.orbs;
    },
 
-   addOrbScore: function () {
+   addOrbScore: function (orb) {
+      this.orbs.splice(orb, 1);
       sound.play(soundfx.orb);
       this.score.orbs++;
       this.updateScore();
@@ -220,7 +281,43 @@ AFRAME.registerComponent('game', {
       this.isRunning = false;
 
       this.updateScore();
-      this.createOrbs();
+      this.createLevel();
+   },
+   checkWallCollision: function () {
+      let collision = false;
+
+      for (let i = 0; i < this.platforms.length; i++) {
+         const platform = this.platforms[i];
+         if(Math.abs(this.rotation - platform.rotation) < 1){           
+            
+            switch(platform.type){
+               case 1:
+                  if(this.jumpHeight < 1) return true;
+                  break
+               case 2:
+                  if(this.jumpHeight < 1.5) return true;
+                  break;
+               case 3:
+                  if(this.jumpHeight < 2) return true;
+                  break;
+               case 4:
+                  var worldPos = this.camera.object3D.position;
+                  if(worldPos.x > 0) return true;
+                  break;                  
+               case 5:
+                  var worldPos = this.camera.object3D.position;
+                  if(worldPos.x < 0) return true;
+                  break;
+               case 6:
+                  var worldPos = this.camera.object3D.position;
+                  if(worldPos.y > 1.8) return true;
+                  break;
+                  
+            }
+         }
+      }
+
+      return collision;
    }
 
 });

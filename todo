@@ -1,4 +1,5 @@
 Must have:
+    ☐ levels
     Pass portal in set amount of time:
         ✔ Detect that pass the portal @done(20-11-19 22:33)
         ✔ Change time every loop @done(20-11-21 12:31)
@@ -29,9 +30,9 @@ Must have:
     ✔  Particle Effects @done(20-11-21 20:11)
 
 Should have:        
-    ☐ Something to jump over
+    ✔ Something to jump over @done(20-11-21 23:34)
     ☐ Credits screen
-    ☐ Something to dodge
+    ✔ Something to dodge @done(20-11-21 23:34)
     ☐ better SFX
     ✔ Music (maybe http://darkfantasystudio.com/music/pixel/) @done(20-11-20 21:19)
         ~ add mention to DARK FANTASY STUDIO and Nicolas Jeudy
@@ -40,6 +41,7 @@ Should have:
 
 Could have:
     ☐ When time runs out, make text bigger and red for the last 5 seconds
+    ☐ improve jumping mechanism
 
 Would like:
     ☐ Different 'worlds'
