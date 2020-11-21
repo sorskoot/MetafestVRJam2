@@ -1,15 +1,19 @@
-import {levels} from '../classes/levels'
+import { levels } from '../classes/levels'
+import { InitAudio, sound, soundfx } from '../classes/sound'
 const GAMESTATE_TITLE = 0;
 const GAMESTATE_PLAY = 1;
 const GAMESTATE_GAMEOVER = 2;
 
 AFRAME.registerComponent('game', {
    schema: {},
-   init: function () {      
+   init: function () {
       this.musicIntro = document.getElementById('music-intro');
       this.musicIntro.loop = true;
+      this.musicIntro.volume = .5;
       this.musicGame = document.getElementById('music-game');
-      this.musicGame.loop = true; 
+      this.musicGame.loop = true;
+      this.musicGame.volume = .5;
+      
       this.world = document.getElementById('world');
       this.lefthand = document.getElementById('left-hand');
       this.righthand = document.getElementById('right-hand');
@@ -39,15 +43,16 @@ AFRAME.registerComponent('game', {
             this.world.appendChild(coneRoot);
          }
       }
-      this.isMusicPlaying = false;            
-      this.el.addEventListener('enter-vr',()=>{
+      this.isMusicPlaying = false;
+      this.el.addEventListener('enter-vr', () => {
+         InitAudio();
          this.musicGame.pause();
          this.musicIntro.play();
       });
-      this.reset();     
-      this.gamestate = GAMESTATE_TITLE;   
-      this.updateScreens();   
-      
+      this.reset();
+      this.gamestate = GAMESTATE_TITLE;
+      this.updateScreens();
+
    },
    update: function (oldData) { },
    tick: function (time, timeDelta) {
@@ -59,7 +64,8 @@ AFRAME.registerComponent('game', {
          this.rotation -= 360;
          if (this.jumpHeight < 5) {
             this.score.loops++;
-            this.updateScore();            
+            sound.play(soundfx.checkpoint);
+            this.updateScore();
             this.createOrbs(this.score.loops);
          }
       }
@@ -68,7 +74,8 @@ AFRAME.registerComponent('game', {
          this.timer -= timeDelta;
          if (this.timer <= 0) {
             this.timer = 0;
-            this.orbscontainer.innerHTML = ''  
+            this.orbscontainer.innerHTML = ''
+            sound.play(soundfx.gameover);
             this.gamestate = GAMESTATE_GAMEOVER;
             this.updateScreens();
          }
@@ -86,7 +93,7 @@ AFRAME.registerComponent('game', {
       const ry = this.righthand.object3D.position.y;
       const dif = (ly - ry);
       const newSpeed = Math.abs(this.prevDif - dif) / timeDelta * 100;
-      if(newSpeed>0) this.isRunning = true;
+      if (newSpeed > 0) this.isRunning = true;
       let slowdownSpeed = 0.002;
       const speedupspeed = 0.05;
       const maxspeed = 1;
@@ -99,21 +106,30 @@ AFRAME.registerComponent('game', {
       this.prevDif = dif;
 
       const avg = (ly + ry) / 2;
-      const deltaAvg = avg - this.prefAvg
+      const deltaAvg = avg - this.prefAvg;
 
       if (this.isReadyToJump) {
          if (deltaAvg > .02) { // moving Up;         
-            this.deltaJump += jumpspeed//jump
+            if (deltaAvg > .03 && !this.jumping) {
+               sound.play(soundfx.jump);
+               this.jumping = true;
+            }
+            this.deltaJump += jumpspeed;//jump
          } else {
             this.isReadyToJump = false;
          }
       } else {
          this.deltaJump = Math.max(0, this.deltaJump - jumpspeed * 2);
       }
+      
       this.jumpHeight += this.deltaJump;
       this.jumpHeight = Math.max(0, this.jumpHeight - fallspeed);
       if (this.jumpHeight === 0) {
+         if(this.jumping === true){
+            sound.play(soundfx.land);
+         }
          this.isReadyToJump = true;
+         this.jumping = false;
       }
       this.prefAvg = avg;
    },
@@ -123,10 +139,10 @@ AFRAME.registerComponent('game', {
       this.scoreLoop.setAttribute('text', { value: this.score.loops });
    },
 
-   createOrbs: function (index = 0) {      
-      this.orbscontainer.innerHTML = ''      
-      this.orbs = []
-      if(index >= levels.length-1) index = levels.length-1;
+   createOrbs: function (index = 0) {
+      this.orbscontainer.innerHTML = '';
+      this.orbs = [];
+      if (index >= levels.length - 1) index = levels.length - 1;
       this.timer = levels[index].levelTime;
 
       for (let i = 0; i < levels[index].orbs.length; i++) {
@@ -148,45 +164,46 @@ AFRAME.registerComponent('game', {
    },
 
    addOrbScore: function () {
+      sound.play(soundfx.orb);
       this.score.orbs++;
       this.updateScore();
    },
 
-   buttondown: function(){
-      if(this.gamestate === GAMESTATE_PLAY) return;
+   buttondown: function () {
+      if (this.gamestate === GAMESTATE_PLAY) return;
       this.reset();
       this.gamestate = GAMESTATE_PLAY;
       this.updateScreens();
    },
 
-   updateScreens:function(){
-      switch(this.gamestate){
+   updateScreens: function () {
+      switch (this.gamestate) {
          case GAMESTATE_GAMEOVER:
             this.musicGame.pause();
-            this.musicIntro.play();
+            setTimeout(() => { this.musicIntro.play() }, 2000);
             this.musicIntro.currentTime = 0;
-            this.scorescreen.setAttribute('visible','false');
-            this.gameoverscreen.setAttribute('visible','true');
-            this.titlescreen.setAttribute('visible','false');
+            this.scorescreen.setAttribute('visible', 'false');
+            this.gameoverscreen.setAttribute('visible', 'true');
+            this.titlescreen.setAttribute('visible', 'false');
             break;
          case GAMESTATE_PLAY:
             this.musicGame.currentTime = 0;
             this.musicGame.play();
             this.musicIntro.pause();
-            this.scorescreen.setAttribute('visible','true');
-            this.gameoverscreen.setAttribute('visible','false');
-            this.titlescreen.setAttribute('visible','false');
+            this.scorescreen.setAttribute('visible', 'true');
+            this.gameoverscreen.setAttribute('visible', 'false');
+            this.titlescreen.setAttribute('visible', 'false');
             break;
          case GAMESTATE_TITLE:
             this.musicGame.pause();
             this.musicIntro.play();
-            this.scorescreen.setAttribute('visible','false');
-            this.gameoverscreen.setAttribute('visible','false');
-            this.titlescreen.setAttribute('visible','true');
+            this.scorescreen.setAttribute('visible', 'false');
+            this.gameoverscreen.setAttribute('visible', 'false');
+            this.titlescreen.setAttribute('visible', 'true');
             break;
       }
    },
-   reset:function(){
+   reset: function () {
       this.score = {
          loops: 0,
          orbs: 0

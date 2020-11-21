@@ -17,16 +17,20 @@ Must have:
     ✔ Game over screen @done(20-11-20 16:03)
         ~ do not pass the checkpoint/portal in time
         ~ hit an object
-    ☐ @today Create 5 levels
+    ✔ @today Create 5 levels @done(20-11-20 23:07)
         ~ Orbs placed
         ~ Time limit        
 
-    ☐ @today SFX
+    ✔ @today SFX @done(20-11-21 00:14)
+        ✔ Hitting an orb @done(20-11-21 00:14)
+        ✔ passing a checkpoint @done(20-11-21 00:14)
+        ✔ jumping @done(20-11-21 00:14)
+        ✔ landing @done(20-11-21 00:16)
     ☐ @today Particle Effects  
 
-Should have:    
-    ☐ Credits screen
+Should have:        
     ☐ Something to jump over
+    ☐ Credits screen
     ☐ Something to dodge
     ✔ Music (maybe http://darkfantasystudio.com/music/pixel/) @done(20-11-20 21:19)
         ~ add mention to DARK FANTASY STUDIO and Nicolas Jeudy
@@ -37,7 +41,9 @@ Could have:
     ☐ When time runs out, make text bigger and red for the last 5 seconds
 
 Would like:
-    Different 'worlds'
+    ☐ Different 'worlds'
+    ☐ mute music
+    ☐ mute audio
 
 
 Bugs:

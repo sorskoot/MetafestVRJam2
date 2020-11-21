@@ -1,4 +1,9 @@
-AFRAME.registerComponent('explode', {   
+//const velocityStart = 32;//64;
+// const speedShrink = 4000;//3000;
+// const outward = 2000;//1000;
+// const downward = 1500;//1000;
+
+AFRAME.registerComponent('explosion', {
     schema: {
         color: {
             type: 'color'
@@ -18,9 +23,8 @@ AFRAME.registerComponent('explode', {
         lifetime:{default:500}
     },
     init: function () {
-        
+        this.el.removeAttribute('geometry');
         this.tick = AFRAME.utils.throttleTick(this.tick, 1/30, this)
-        
         this.particleCount = 75;
         this.particles = new THREE.BufferGeometry();
         this.velocities = [];
