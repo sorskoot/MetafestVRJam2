@@ -20,7 +20,7 @@ export const levels = [
             { type: 5, rot: 140 },
             { type: 4, rot: 220 },
             { type: 5, rot: 240 },
-            { type: 1, rot: 300 },          
+            { type: 1, rot: 300 },
         ]
     }, {
         levelTime: 20000,

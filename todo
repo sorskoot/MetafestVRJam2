@@ -1,5 +1,8 @@
 Must have:
     ☐ levels
+    ✔ description @done(20-11-22 15:51)
+    ☐ screenshots
+
     Pass portal in set amount of time:
         ✔ Detect that pass the portal @done(20-11-19 22:33)
         ✔ Change time every loop @done(20-11-21 12:31)
@@ -37,7 +40,7 @@ Should have:
     ✔ Music (maybe http://darkfantasystudio.com/music/pixel/) @done(20-11-20 21:19)
         ~ add mention to DARK FANTASY STUDIO and Nicolas Jeudy
         ~ make sure music is not in GitHub, but link to the music
-    
+    ☐ vibrations on the hands when you touch
 
 Could have:
     ☐ When time runs out, make text bigger and red for the last 5 seconds
@@ -45,6 +48,8 @@ Could have:
 
 Would like:
     ☐ Different 'worlds'
+    ☐ level editor
+    ☐ much more levels
     ☐ mute music
     ☐ mute audio
 
